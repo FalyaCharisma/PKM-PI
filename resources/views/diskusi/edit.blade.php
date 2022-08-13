@@ -45,6 +45,16 @@
                             </div>
                             @enderror
                         </div>
+                        <div class="form-group">
+                            <label>DOCUMENT (Optional)</label>
+                            <input type="file" name="document" id="document" class="form-control @error('document') is-invalid @enderror">
+
+                            @error('document')
+                            <div class="invalid-feedback" style="display: block">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
 
                         <button class="btn btn-primary mr-1 btn-submit" type="submit"><i class="fa fa-paper-plane"></i>
                             UPDATE</button>

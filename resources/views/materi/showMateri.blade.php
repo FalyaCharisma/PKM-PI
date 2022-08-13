@@ -40,10 +40,10 @@
                                             <h5>Download Materi</h5>
                                         </div>
                                         <div class="card-body">
-                                            < @if($materis->link == '')
+                                             @if($materis->link == '')
                                             <a href="#"> <i class="fa-solid fa-empty-set"></i>Tidak ada File </a>
                                         @else
-                                            <a href="{{ asset('storage/public/materis/'.$materi->link) }}" download> <i class="fas fa-file-download"></i> Download </a>
+                                            <a href="{{ url('storage/public/materis/'.$materis->link) }}" download> <i class="fas fa-file-download"></i> Download </a>
                                         @endif
                                         </div>
                                     </div>

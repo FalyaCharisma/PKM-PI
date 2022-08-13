@@ -99,8 +99,4 @@
     </section>
 </div>
 
-{{-- JS UNTUK UPLOAD FILE --}}
-
-X
-
 @stop

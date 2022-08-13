@@ -73,7 +73,7 @@ class DiskusiController extends Controller
             $this->validate($request, [
                 'materi_id'   => 'required',
                 'pertanyaan'  => 'required',
-                'document'     => 'mimes:doc,docx,pdf,pptx,xlsx',
+                'document'     => 'mimes:jpeg,jpg,png,gif|required|max:10000'
             ]);
 
             //upload document
@@ -165,15 +165,29 @@ class DiskusiController extends Controller
     }
     public function update(Request $request, $id)
     {
+        $diskusi = Diskusi::find($id);
+
+        $name = $diskusi->link;
+
+        if ($request->hasFile('document')) {
+            $this->validate($request, [
+                'document'     => 'mimes:jpeg,jpg,png,gif|required|max:10000'
+            ]);
+
+            $name = $request->file('document')->getClientOriginalName();
+
+            $document = $request->file('document');
+            $document->storeAs('public/diskusi', $name);
+        }
+
         $this->validate($request, [
             'pertanyaan'  => 'required',
-            'materi_id'  => 'required'
+            'materi_id'  => 'required',
         ]);
-
-        $diskusi = Diskusi::find($id);
 
         $diskusi->pertanyaan = $request->input('pertanyaan');
         $diskusi->materi_id = $request->input('materi_id');
+        $diskusi->link = $name;
         $diskusi->update();
 
         if ($diskusi) {

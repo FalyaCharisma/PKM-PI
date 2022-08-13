@@ -17,7 +17,7 @@ class MateriController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['role_or_permission:student|teacher|materi.index|materi.showMateri|materi.showlist']);
+        $this->middleware(['permission:materi.index|materi.create|materi.edit|materi.delete|materi.tentor|materi.showMateri|materi.showlist']);
     }
 
     public function index()
@@ -95,16 +95,29 @@ class MateriController extends Controller
 
     public function update(Request $request, Materi $materi)
     {
-        $this->validate($request, [
-            'kelas'  => 'required',
-            'mapel'  => 'required',
-            'judul'  => 'required',
-            'isi'    => 'required',
-            'document'     => 'mimes:doc,docx,pdf,pptx,xlsx',
-        ]);
+        $name = $materi->link;
+        if ($request->hasFile('document')) {
+            $this->validate($request, [
+                'kelas'  => 'required',
+                'mapel'  => 'required',
+                'judul'  => 'required',
+                'isi'    => 'required',
+                'document'     => 'mimes:doc,docx,pdf,pptx,xlsx',
+            ]);
 
-        $document = $request->file('document');
-        $document->storeAs('public/materis', $document->getClientOriginalName());
+            $name = $request->file('document')->getClientOriginalName();
+
+            $document = $request->file('document');
+            $document->storeAs('public/materis', $name);
+        } else {
+            $this->validate($request, [
+                'kelas'  => 'required',
+                'mapel'  => 'required',
+                'judul'  => 'required',
+                'isi'    => 'required',
+
+            ]);
+        }
 
         $materi->update([
             'kelas'           => $request->input('kelas'),
@@ -112,7 +125,7 @@ class MateriController extends Controller
             'judul'           => $request->input('judul'),
             'isi'             => $request->input('isi'),
             'user_id'         => Auth()->id(),
-            'link'            => $document->getClientOriginalName(),
+            'link'            => $name,
         ]);
 
         if ($materi) {

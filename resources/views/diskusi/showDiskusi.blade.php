@@ -17,12 +17,19 @@
 
                     <div class="card-body">
                         @can('diskusi.showDiskusi')
-                            <div class="card card-default  mb-2">
+                            <div class="card card-default mb-2">
                                 <div class="card-body">
                                     <span class="">{{ $diskusi->user->username }},
                                         <b>{{ $diskusi->created_at }}</b></span>
                                     <hr>
                                     <p class=""><b>Pertanyaan: </b> {{ $diskusi->pertanyaan }} </p>
+                                </div>
+                                <div class="card-body">
+                                    @if ($diskusi->link)
+                                        <img src="{{url('storage/public/diskusi/'.$diskusi->link)}}" alt="lampiran">
+                                    @else
+                                        <img src="{{url('storage/public/handler/no-photo.png')}}" alt="lampiran" width="25%" height="25%">
+                                    @endif
                                 </div>
                             </div>
                         @endcan

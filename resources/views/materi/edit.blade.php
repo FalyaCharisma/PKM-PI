@@ -16,10 +16,11 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('materi.update', $materi->id) }}" method="POST"
+                    <form action="{{ route('materi.update', $materi->id) }}" method="post"
                         enctype="multipart/form-data">
                         @csrf
-                        @method('PUT')
+                        @method('put')
+                        
                         <div class="form-group">
                             <label>MAPEL</label>
                             <select class="form-control select-mapel @error('mapel') is-invalid @enderror" name="mapel">
@@ -85,7 +86,7 @@
 
                         <div class="form-group">
                             <label>DOCUMENT</label>
-                            <input type="file" name="document" value="{{ old('document', $materi->document) }}" class="form-control @error('document') is-invalid @enderror">
+                            <input type="file" name="document" value="{{ old('document', $materi->link) }}" class="form-control @error('document') is-invalid @enderror">
 
                             @error('document')
                             <div class="invalid-feedback" style="display: block">
@@ -100,9 +101,9 @@
 
                     </form>
                 </div>
-            </div>
+             </div>
         </div>
-        @endasanyrole
+        @endhasanyrole
     </section>
 </div>
 @stop
