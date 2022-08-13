@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+ 
 use App\Models\Absensi;
 use App\Models\Siswa;
 use Barryvdh\DomPDF\Facade as PDF;
