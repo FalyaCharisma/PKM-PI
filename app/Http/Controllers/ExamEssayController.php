@@ -19,25 +19,26 @@ class ExamEssayController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['permission:exam_essays.index|exam_essays.create|exam_essays.edit|exam_essays.delete']);
+        // $this->middleware(['role_or_permission:teacher|exam_essays.index|exam_essays.create|exam_essays.edit|exam_essays.delete']);
+        $this->middleware(['role_or_permission:student|exam_essays.index']);
     }
 
     public function index()
     {
         $currentUser = User::findOrFail(Auth()->id());
-        if($currentUser->hasRole('student')){
-            $exam_essays = Exam::whereHas('users',function(Builder $query){
-                $query->where('user_id',Auth()->id())->where('type_exam', 'essay');
+        if ($currentUser->hasRole('student')) {
+            $exam_essays = Exam::whereHas('users', function (Builder $query) {
+                $query->where('user_id', Auth()->id())->where('type_exam', 'essay');
             })->paginate(10);
-        }elseif($currentUser->hasRole('teacher')){
-            $exam_essays = Exam::where('created_by', Auth()->id())->latest()->when(request()->q, function($exam_essays) {
+        } elseif ($currentUser->hasRole('teacher')) {
+            $exam_essays = Exam::where('created_by', Auth()->id())->latest()->when(request()->q, function ($exam_essays) {
                 $exam_essays = $exam_essays->where('created_by', Auth()->id())->where('name', 'like', '%' . request()->q . '%');
-            })->where('type_exam', 'essay')->paginate(10); 
+            })->where('type_exam', 'essay')->paginate(10);
         }
-        
+
         $user = new User();
 
-        return view('exam_essays.index', compact('exam_essays','user'));
+        return view('exam_essays.index', compact('exam_essays', 'user'));
     }
 
     public function create()
@@ -50,7 +51,7 @@ class ExamEssayController extends Controller
         $this->validate($request, [
             'name'          => 'required',
             'time'          => 'required',
-            'total_question'=> 'required',
+            'total_question' => 'required',
             'start'         => 'required',
             'end'           => 'required',
             'type_exam'     => 'required'
@@ -59,7 +60,7 @@ class ExamEssayController extends Controller
         $exam_essays = Exam::create([
             'name'          => $request->input('name'),
             'time'          => $request->input('time'),
-            'total_question'=> $request->input('total_question'),
+            'total_question' => $request->input('total_question'),
             'status'        => 'Ready',
             'type_exam'     => $request->input('type_exam'),
             'start'         => $request->input('start'),
@@ -69,10 +70,10 @@ class ExamEssayController extends Controller
 
         $exam_essays->questionEssays()->sync($request->input('questions'));
 
-        if($exam_essays){
+        if ($exam_essays) {
             //redirect dengan pesan sukses
             return redirect()->route('exam_essays.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('exam_essays.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -81,16 +82,16 @@ class ExamEssayController extends Controller
     public function edit(exam $exam_essay)
     {
         $questionEssays = $exam_essay->questionEssays()->where('exam_id', $exam_essay->id)->get();
-        
-        return view('exam_essays.edit', compact('exam_essay','questionEssays'));
+
+        return view('exam_essays.edit', compact('exam_essay', 'questionEssays'));
     }
 
-    public function update(Request $request, exam $exam_essay) 
+    public function update(Request $request, exam $exam_essay)
     {
         $this->validate($request, [
             'name'          => 'required',
             'time'          => 'required',
-            'total_question'=> 'required',
+            'total_question' => 'required',
             'start'         => 'required',
             'end'           => 'required'
         ]);
@@ -98,7 +99,7 @@ class ExamEssayController extends Controller
         $exam_essay->update([
             'name'          => $request->input('name'),
             'time'          => $request->input('time'),
-            'total_question'=> $request->input('total_question'),
+            'total_question' => $request->input('total_question'),
             'start'         => $request->input('start'),
             'end'           => $request->input('end'),
             'created_by'    => Auth()->id()
@@ -106,10 +107,10 @@ class ExamEssayController extends Controller
 
         $exam_essay->questionEssays()->sync($request->input('questions'));
 
-        if($exam_essay){
+        if ($exam_essay) {
             //redirect dengan pesan sukses
             return redirect()->route('exam_essays.index')->with(['success' => 'Data Berhasil Diupdate!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('exam_essays.index')->with(['error' => 'Data Gagal Diupdate!']);
         }
@@ -127,11 +128,11 @@ class ExamEssayController extends Controller
         $exam = Exam::findOrFail($id);
         $exam->delete();
 
-        if($exam){
+        if ($exam) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);
@@ -168,8 +169,6 @@ class ExamEssayController extends Controller
         $exam_essay->users()->sync($request->input('students'));
 
         return redirect('/exam_essays');
-
-
     }
 
     public function review($userId, $examId)
@@ -182,8 +181,7 @@ class ExamEssayController extends Controller
         // $user = User::findOrFail($userId);
         $exam_essay = Exam::findOrFail($id);
         $users = new User();
-    
-        return view('exam_essays.riwayat', compact('exam_essay','users'));
-    }
 
+        return view('exam_essays.riwayat', compact('exam_essay', 'users'));
+    }
 }

@@ -14,13 +14,13 @@ class MapelController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['permission:mapels.index|mapels.create|mapels.delete']);
+        $this->middleware(['role:admin|permission:mapels.index|mapels.create|mapels.delete']);
     }
 
     public function index()
     {
-        $mapels = mataPelajaran::latest()->when(request()->q, function($mapels) {
-            $mapels = $mapels->where('mata_pelajaran', 'like', '%'. request()->q . '%');
+        $mapels = mataPelajaran::latest()->when(request()->q, function ($mapels) {
+            $mapels = $mapels->where('mata_pelajaran', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         return view('mapels.index', compact('mapels'));
@@ -32,15 +32,15 @@ class MapelController extends Controller
         $this->validate($request, [
             'mata_pelajaran'     => 'required'
         ]);
-        
+
         $mapel = mataPelajaran::create([
             'mata_pelajaran'     => $request->input('mata_pelajaran')
         ]);
 
-        if($mapel){
+        if ($mapel) {
             //redirect dengan pesan sukses
             return redirect()->route('mapels.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('mapels.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -57,11 +57,11 @@ class MapelController extends Controller
         $mapels = mataPelajaran::findOrFail($id);
         $mapels->delete();
 
-        if($mapels){
+        if ($mapels) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

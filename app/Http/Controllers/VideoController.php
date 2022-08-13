@@ -8,16 +8,16 @@ use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
-    
+
     public function __construct()
     {
-        $this->middleware(['permission:videos.index|videos.create|videos.delete']);
+        $this->middleware(['role:admin|teacher|permission:videos.index|videos.create|videos.delete']);
     }
 
     public function index()
     {
-        $videos = Video::where('user_id', Auth()->id())->latest()->when(request()->q, function($videos) {
-            $videos = $videos->where('title', 'like', '%'. request()->q . '%');
+        $videos = Video::where('user_id', Auth()->id())->latest()->when(request()->q, function ($videos) {
+            $videos = $videos->where('title', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         return view('videos.index', compact('videos'));
@@ -38,13 +38,13 @@ class VideoController extends Controller
             'title'     => $request->input('title'),
             'link'     => $video->getClientOriginalName(),
             'caption'   => $request->input('caption'),
-            'user_id'   => Auth()->id(), 
+            'user_id'   => Auth()->id(),
         ]);
 
-        if($video){
+        if ($video) {
             //redirect dengan pesan sukses
             return redirect()->route('videos.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('videos.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -59,14 +59,14 @@ class VideoController extends Controller
     public function destroy($id)
     {
         $video = Video::findOrFail($id);
-        $link= Storage::disk('local')->delete('public/videos/'.$video->link);
+        $link = Storage::disk('local')->delete('public/videos/' . $video->link);
         $video->delete();
 
-        if($video){
+        if ($video) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

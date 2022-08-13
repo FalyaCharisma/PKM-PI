@@ -4,6 +4,7 @@
 @section('content')
 <div class="main-content">
     <section class="section">
+        @hasanyrole('admin|superadmin')
         <div class="section-header">
             <h1>Edit Informasi</h1>
         </div>
@@ -82,6 +83,7 @@
                 </div>
             </div>
         </div>
+        @endhasanyrole('admin|superadmin')
     </section>
 </div>
 @stop

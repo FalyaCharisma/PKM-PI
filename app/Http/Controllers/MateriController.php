@@ -17,7 +17,7 @@ class MateriController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['permission:materi.index|materi.create|materi.edit|materi.delete|materi.tentor|materi.showMateri|materi.showlist']);
+        $this->middleware(['role_or_permission:student|teacher|materi.index|materi.showMateri|materi.showlist']);
     }
 
     public function index()

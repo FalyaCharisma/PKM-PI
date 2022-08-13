@@ -3,6 +3,7 @@
 @section('content')
 <div class="main-content">
     <section class="section">
+        @hasanyrole('admin|superadmin')
         <div class="section-header">
             <h1>Riwayat Penilaian Evaluasi Tentor</h1>
         </div>
@@ -64,7 +65,7 @@
             </div>
             @endcan
         </div>
-
+        @hasanyrole('admin|superadmin')
     </section>
 </div>
 

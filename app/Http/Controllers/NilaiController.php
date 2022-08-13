@@ -24,43 +24,48 @@ class NilaiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware(['role:student|teacher']);
+    }
+
     public function index()
     {
         $currentUser = User::findOrFail(Auth()->id());
-        if($currentUser->hasRole('student')){
-            $exams = Exam::whereHas('users',function(Builder $query){
-                $query->where('user_id',Auth()->id());
+        if ($currentUser->hasRole('student')) {
+            $exams = Exam::whereHas('users', function (Builder $query) {
+                $query->where('user_id', Auth()->id());
             })->paginate(10);
-            
-        }elseif($currentUser->hasRole('teacher')){
+        } elseif ($currentUser->hasRole('teacher')) {
             $exams = Exam::where('created_by', Auth()->id())->latest()->when(request()->q, function ($exams) {
                 $exams = $exams->where('created_by', Auth()->id())->where('name', 'like', '%' . request()->q . '%');
-            })->where('type_exam', 'ganda')->paginate(10);          
+            })->where('type_exam', 'ganda')->paginate(10);
         }
-        
+
         $user = new User();
 
-        return view('nilai.index', compact('exams','user'));
+        return view('nilai.index', compact('exams', 'user'));
     }
 
     public function tentor()
-    { 
+    {
         $users = User::latest()->get();
         $exams = Exam::latest()->get();
         $siswa = new Siswa();
         $tentor = Tentor::latest()->get();
-        return view('nilai.tentor', compact('users','tentor','exams','siswa'));
+        return view('nilai.tentor', compact('users', 'tentor', 'exams', 'siswa'));
     }
 
     public function siswa(Request $request, $id)
-    { 
+    {
         $users = User::findOrFail($id);
         $exams = Exam::where('created_by', Auth()->id())->latest()->when(request()->q, function ($exams) {
             $exams = $exams->where('created_by', Auth()->id())->where('name', 'like', '%' . request()->q . '%');
         })->where('type_exam', 'ganda');
         $siswa = new Siswa();
         $tentor = Tentor::latest()->get();
-        return view('nilai.siswa', compact('users','tentor','exams','siswa'));
+        return view('nilai.siswa', compact('users', 'tentor', 'exams', 'siswa'));
     }
 
     /**
@@ -129,23 +134,25 @@ class NilaiController extends Controller
         //
     }
 
-    public function export_pdf(){
+    public function export_pdf()
+    {
         // $startDate = Carbon::parse($start_date)->toDateString();
         // $endDate = Carbon::parse($end_date)->toDateString();
         // $nilai = Exam::whereHas('users',function(Builder $query){
         //     $query->where('user_id',Auth()->id());
         // });
         $user = new User();
-        $nilai = Exam::whereHas('users',function(Builder $query){
-            $query->where('user_id',Auth()->id());
+        $nilai = Exam::whereHas('users', function (Builder $query) {
+            $query->where('user_id', Auth()->id());
         })->get();
         // $nilai = Nilai::latest()->get()->whereBetween('created_at',[$start_date, $end_date]);
-        $pdf = PDF::loadView('nilai.nilaiPdf', compact('nilai','user'));
+        $pdf = PDF::loadView('nilai.nilaiPdf', compact('nilai', 'user'));
         // $pdf->download('rekapan.pdf');
         return $pdf->stream();
     }
 
-    public function cetakNilai(Request $request, $id){
+    public function cetakNilai(Request $request, $id)
+    {
         // $startDate = Carbon::parse($start_date)->toDateString();
         // $endDate = Carbon::parse($end_date)->toDateString();
         // $nilai = Exam::whereHas('users',function(Builder $query){
@@ -154,7 +161,7 @@ class NilaiController extends Controller
         $users = User::findOrFail($id);
         $exams = Exam::latest()->get();
         // $nilai = Nilai::latest()->get()->whereBetween('created_at',[$start_date, $end_date]);
-        $pdf = PDF::loadView('nilai.cetakNilai', compact('exams','users'));
+        $pdf = PDF::loadView('nilai.cetakNilai', compact('exams', 'users'));
         // $pdf->download('rekapan.pdf');
         return $pdf->stream();
     }

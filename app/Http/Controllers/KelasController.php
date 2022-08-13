@@ -9,13 +9,13 @@ class KelasController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['permission:kelas.index|kelas.create|kelas.delete']);
+        $this->middleware(['role:admin|permission:kelas.index|kelas.create|kelas.delete']);
     }
 
     public function index()
     {
-        $kelass = Kelas::latest()->when(request()->q, function($kelass) {
-            $kelass = $kelass->where('nama_kelas', 'like', '%'. request()->q . '%');
+        $kelass = Kelas::latest()->when(request()->q, function ($kelass) {
+            $kelass = $kelass->where('nama_kelas', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         return view('kelas.index', compact('kelass'));
@@ -26,15 +26,15 @@ class KelasController extends Controller
         $this->validate($request, [
             'nama_kelas'     => 'required'
         ]);
-        
+
         $kelas = Kelas::create([
             'nama_kelas'     => $request->input('nama_kelas')
         ]);
 
-        if($kelas){
+        if ($kelas) {
             //redirect dengan pesan sukses
             return redirect()->route('kelas.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('kelas.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -45,11 +45,11 @@ class KelasController extends Controller
         $kelass = Kelas::findOrFail($id);
         $kelass->delete();
 
-        if($kelass){
+        if ($kelass) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

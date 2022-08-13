@@ -10,13 +10,13 @@ class ImageController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['permission:images.index|images.create|images.delete']);
+        $this->middleware(['role:admin|teacher|permission:images.index|images.create|images.delete']);
     }
 
     public function index()
     {
-        $images = Image::where('user_id', Auth()->id())->latest()->when(request()->q, function($images) {
-            $images = $images->where('title', 'like', '%'. request()->q . '%');
+        $images = Image::where('user_id', Auth()->id())->latest()->when(request()->q, function ($images) {
+            $images = $images->where('title', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         return view('images.index', compact('images'));
@@ -37,13 +37,13 @@ class ImageController extends Controller
             'title'     => $request->input('title'),
             'link'     => $image->getClientOriginalName(),
             'caption'   => $request->input('caption'),
-            'user_id'   => Auth()->id(), 
+            'user_id'   => Auth()->id(),
         ]);
 
-        if($image){
+        if ($image) {
             //redirect dengan pesan sukses
             return redirect()->route('images.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('images.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -52,14 +52,14 @@ class ImageController extends Controller
     public function destroy($id)
     {
         $image = Image::findOrFail($id);
-        $link= Storage::disk('local')->delete('public/images/'.$image->link);
+        $link = Storage::disk('local')->delete('public/images/' . $image->link);
         $image->delete();
 
-        if($image){
+        if ($image) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

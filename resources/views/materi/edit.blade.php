@@ -3,6 +3,7 @@
 @section('content')
 <div class="main-content">
     <section class="section">
+        @hasanyrole('admin|superadmin')
         <div class="section-header">
             <h1>Edit Materi</h1>
         </div>
@@ -101,6 +102,7 @@
                 </div>
             </div>
         </div>
+        @endasanyrole
     </section>
 </div>
 @stop

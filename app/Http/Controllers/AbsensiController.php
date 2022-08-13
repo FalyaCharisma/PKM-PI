@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Absensi;
 use App\Models\Siswa;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -18,16 +20,16 @@ class AbsensiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['permission:absensi.index|absensi.create|absensi.delete|absensi.tentor|absensi.riwayat|absensi.export_excel|absensi.ExportPDF']);
+        $this->middleware(['role:teacher|student', 'permission:absensi.index|absensi.create|absensi.delete|absensi.tentor|absensi.riwayat|absensi.export_excel|absensi.ExportPDF']);
     }
     public function tentor()
     {
         $absens = Absensi::latest()->when(request()->q, function ($absens) {
             $absens = $absens->where('name', 'like', '%' . request()->q . '%');
-        })->paginate(10); 
+        })->paginate(10);
         return view('absensi.tentor', compact('absens'));
     }
- 
+
     public function riwayat()
     {
         $absens = Absensi::latest()->when(request()->q, function ($absens) {
@@ -42,7 +44,7 @@ class AbsensiController extends Controller
             $absens = $absens->where('name', 'like', '%' . request()->q . '%');
         })->paginate(10);
         $siswa = Siswa::latest()->get();
-        return view('absensi.index', compact('absens','siswa'));
+        return view('absensi.index', compact('absens', 'siswa'));
     }
     public function store(Request $request)
     {
@@ -60,20 +62,20 @@ class AbsensiController extends Controller
             'name'      => Auth::user()->tentor->name,
             'nama_siswa' => $request->input('nama_siswa'),
         ]);
-        if($image){
+        if ($image) {
             //redirect dengan pesan sukses
             return redirect()->route('absensi.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('absensi.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
-    } 
-    
+    }
+
     public function destroy($id)
     {
         $absens = Absensi::findOrFail($id);
         $absens->delete();
- 
+
         if ($absens) {
             return response()->json([
                 'status' => 'success'
@@ -85,13 +87,13 @@ class AbsensiController extends Controller
         }
     }
 
-    public function cetakAbsensiPertanggalPDF($start_date, $end_date, $name){
+    public function cetakAbsensiPertanggalPDF($start_date, $end_date, $name)
+    {
         $startDate = Carbon::parse($start_date)->toDateString();
         $endDate = Carbon::parse($end_date)->toDateString();
-        $absens = Absensi::latest()->get()->whereBetween('created_at',[$start_date, $end_date])->where('name', $name);
-        $pdf = PDF::loadView('absensi.export', compact('absens','startDate','endDate','name'));
+        $absens = Absensi::latest()->get()->whereBetween('created_at', [$start_date, $end_date])->where('name', $name);
+        $pdf = PDF::loadView('absensi.export', compact('absens', 'startDate', 'endDate', 'name'));
         $pdf->download('rekapan.pdf');
-        return $pdf->stream(); 
+        return $pdf->stream();
     }
-
 }

@@ -7,16 +7,16 @@ use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
-   
+
     public function __construct()
     {
-        $this->middleware(['permission:subjects.index|subjects.create|subjects.delete']);
+        $this->middleware(['role:teacher|permission:subjects.index|subjects.create|subjects.delete']);
     }
 
     public function index()
     {
-        $subjects = Subject::where('user_id', Auth()->id())->latest()->when(request()->q, function($subjects) {
-            $subjects = $subjects->where('name', 'like', '%'. request()->q . '%'); 
+        $subjects = Subject::where('user_id', Auth()->id())->latest()->when(request()->q, function ($subjects) {
+            $subjects = $subjects->where('name', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         return view('subjects.index', compact('subjects'));
@@ -27,16 +27,16 @@ class SubjectController extends Controller
         $this->validate($request, [
             'name'     => 'required'
         ]);
-        
+
         $subject = Subject::create([
             'name'     => $request->input('name'),
-            'user_id'   => Auth()->id(), 
+            'user_id'   => Auth()->id(),
         ]);
 
-        if($subject){
+        if ($subject) {
             //redirect dengan pesan sukses
             return redirect()->route('subjects.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('subjects.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -47,11 +47,11 @@ class SubjectController extends Controller
         $subject = subject::findOrFail($id);
         $subject->delete();
 
-        if($subject){
+        if ($subject) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

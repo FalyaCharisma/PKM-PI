@@ -16,34 +16,34 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ExamController extends Controller
 {
-     /**
+    /**
      * __construct
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware(['permission:exams.index|exams.create|exams.edit|exams.delete']);
+        // $this->middleware(['role_or_permission:teacher|student|exams.index|exams.create|exams.edit|exams.delete']);
+        $this->middleware(['role_or_permission:student|exams.index']);
     }
 
     public function index()
     {
 
         $currentUser = User::findOrFail(Auth()->id());
-        if($currentUser->hasRole('student')){
-            $exams = Exam::whereHas('users',function(Builder $query){
-                $query->where('user_id',Auth()->id())->where('type_exam', 'ganda');
+        if ($currentUser->hasRole('student')) {
+            $exams = Exam::whereHas('users', function (Builder $query) {
+                $query->where('user_id', Auth()->id())->where('type_exam', 'ganda');
             })->paginate(10);
-            
-        }elseif($currentUser->hasRole('teacher')){
+        } elseif ($currentUser->hasRole('teacher')) {
             $exams = Exam::where('created_by', Auth()->id())->latest()->when(request()->q, function ($exams) {
                 $exams = $exams->where('created_by', Auth()->id())->where('name', 'like', '%' . request()->q . '%');
-            })->where('type_exam', 'ganda')->paginate(10);          
+            })->where('type_exam', 'ganda')->paginate(10);
         }
-        
+
         $user = new User();
 
-        return view('exams.index', compact('exams','user'));
+        return view('exams.index', compact('exams', 'user'));
     }
 
     public function create()
@@ -56,7 +56,7 @@ class ExamController extends Controller
         $this->validate($request, [
             'name'          => 'required',
             'time'          => 'required',
-            'total_question'=> 'required',
+            'total_question' => 'required',
             'start'         => 'required',
             'end'           => 'required'
         ]);
@@ -64,7 +64,7 @@ class ExamController extends Controller
         $exam = Exam::create([
             'name'          => $request->input('name'),
             'time'          => $request->input('time'),
-            'total_question'=> $request->input('total_question'),
+            'total_question' => $request->input('total_question'),
             'status'        => 'Ready',
             'type_exam'     => $request->input('type_exam'),
             'start'         => $request->input('start'),
@@ -74,10 +74,10 @@ class ExamController extends Controller
 
         $exam->questions()->sync($request->input('questions'));
 
-        if($exam){
+        if ($exam) {
             //redirect dengan pesan sukses
             return redirect()->route('exams.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('exams.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -86,7 +86,7 @@ class ExamController extends Controller
     public function edit(exam $exam)
     {
         $questions = $exam->questions()->where('exam_id', $exam->id)->get();
-        
+
         return view('exams.edit', compact('exam', 'questions'));
     }
 
@@ -95,7 +95,7 @@ class ExamController extends Controller
         $this->validate($request, [
             'name'          => 'required',
             'time'          => 'required',
-            'total_question'=> 'required',
+            'total_question' => 'required',
             'start'         => 'required',
             'end'           => 'required'
         ]);
@@ -103,7 +103,7 @@ class ExamController extends Controller
         $exam->update([
             'name'          => $request->input('name'),
             'time'          => $request->input('time'),
-            'total_question'=> $request->input('total_question'),
+            'total_question' => $request->input('total_question'),
             'start'         => $request->input('start'),
             'end'           => $request->input('end'),
             'created_by'    => Auth()->id()
@@ -111,10 +111,10 @@ class ExamController extends Controller
 
         $exam->questions()->sync($request->input('questions'));
 
-        if($exam){
+        if ($exam) {
             //redirect dengan pesan sukses
             return redirect()->route('exams.index')->with(['success' => 'Data Berhasil Diupdate!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('exams.index')->with(['error' => 'Data Gagal Diupdate!']);
         }
@@ -123,7 +123,7 @@ class ExamController extends Controller
     public function show(exam $exam)
     {
         $questions = $exam->questions()->where('exam_id', $exam->id)->get();
-        
+
         return view('exams.show', compact('exam', 'questions'));
     }
 
@@ -132,11 +132,11 @@ class ExamController extends Controller
         $exam = Exam::findOrFail($id);
         $exam->delete();
 
-        if($exam){
+        if ($exam) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);
@@ -174,7 +174,6 @@ class ExamController extends Controller
         $exam->users()->sync($request->input('students'));
 
         return redirect('/exams');
-
     }
 
     public function review($userId, $examId)
@@ -187,7 +186,6 @@ class ExamController extends Controller
         $exam = Exam::findOrFail($id);
         $users = new User();
 
-        return view('exams.riwayat', compact('exam','users'));
+        return view('exams.riwayat', compact('exam', 'users'));
     }
-
 }

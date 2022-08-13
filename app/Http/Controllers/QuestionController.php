@@ -14,16 +14,16 @@ use Illuminate\Http\Request;
 
 class QuestionController extends Controller
 {
-   
+
     public function __construct()
     {
-        $this->middleware(['permission:questions.index|questions.create|questions.edit|questions.delete']);
+        $this->middleware(['role:teacher|permission:questions.index|questions.create|questions.edit|questions.delete']);
     }
 
     public function index()
     {
-        $questions = Question::where('created_by', Auth()->id())->latest()->when(request()->q, function($questions) {
-            $questions = $questions->where('pertanyaan', 'like', '%'. request()->q . '%');
+        $questions = Question::where('created_by', Auth()->id())->latest()->when(request()->q, function ($questions) {
+            $questions = $questions->where('pertanyaan', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         $subject = new Subject();
@@ -33,7 +33,7 @@ class QuestionController extends Controller
         $image = new Image();
         $user = new User();
 
-        return view('questions.index', compact('questions', 'video', 'audio', 'document', 'image', 'user','subject'));
+        return view('questions.index', compact('questions', 'video', 'audio', 'document', 'image', 'user', 'subject'));
     }
 
     public function create()
@@ -43,7 +43,7 @@ class QuestionController extends Controller
         $audios = Audio::latest()->get();
         $images = Image::latest()->get();
         $documents = Document::latest()->get();
-        return view('questions.create', compact( 'subjects','videos', 'audios', 'images', 'documents'));
+        return view('questions.create', compact('subjects', 'videos', 'audios', 'images', 'documents'));
     }
 
     public function store(Request $request)
@@ -74,10 +74,10 @@ class QuestionController extends Controller
         ]);
 
 
-        if($question){
+        if ($question) {
             //redirect dengan pesan sukses
             return redirect()->route('questions.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('questions.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -90,7 +90,7 @@ class QuestionController extends Controller
         $images = Image::latest()->get();
         $subjects = Subject::latest()->get();
         $documents = Document::latest()->get();
-        return view('questions.edit', compact('question','videos', 'audios', 'images', 'documents','subjects'));
+        return view('questions.edit', compact('question', 'videos', 'audios', 'images', 'documents', 'subjects'));
     }
 
     public function update(Request $request, Question $question)
@@ -122,10 +122,10 @@ class QuestionController extends Controller
             'created_by'    => Auth()->id()
         ]);
 
-        if($question){
+        if ($question) {
             //redirect dengan pesan sukses
             return redirect()->route('questions.index')->with(['success' => 'Data Berhasil Diupdate!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('questions.index')->with(['error' => 'Data Gagal Diupdate!']);
         }
@@ -137,11 +137,11 @@ class QuestionController extends Controller
         $question->delete();
 
 
-        if($question){
+        if ($question) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

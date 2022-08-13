@@ -8,16 +8,16 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    
+
     public function __construct()
     {
-        $this->middleware(['permission:documents.index|documents.create|documents.delete']);
+        $this->middleware(['role:admin|teacher|permission:documents.index|documents.create|documents.delete']);
     }
 
     public function index()
     {
-        $documents = Document::where('user_id', Auth()->id())->latest()->when(request()->q, function($documents) {
-            $documents = $documents->where('title', 'like', '%'. request()->q . '%'); 
+        $documents = Document::where('user_id', Auth()->id())->latest()->when(request()->q, function ($documents) {
+            $documents = $documents->where('title', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         return view('documents.index', compact('documents'));
@@ -38,13 +38,13 @@ class DocumentController extends Controller
             'title'     => $request->input('title'),
             'link'     => $document->getClientOriginalName(),
             'caption'   => $request->input('caption'),
-            'user_id'   => Auth()->id(), 
+            'user_id'   => Auth()->id(),
         ]);
 
-        if($document){
+        if ($document) {
             //redirect dengan pesan sukses
             return redirect()->route('documents.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('documents.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -53,14 +53,14 @@ class DocumentController extends Controller
     public function destroy($id)
     {
         $document = Document::findOrFail($id);
-        $link= Storage::disk('local')->delete('public/documents/'.$document->link);
+        $link = Storage::disk('local')->delete('public/documents/' . $document->link);
         $document->delete();
 
-        if($document){
+        if ($document) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

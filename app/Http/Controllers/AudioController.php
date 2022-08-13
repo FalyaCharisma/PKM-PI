@@ -8,16 +8,16 @@ use Illuminate\Support\Facades\Storage;
 
 class AudioController extends Controller
 {
-    
+
     public function __construct()
     {
-        $this->middleware(['permission:audios.index|audios.create|audios.delete']);
+        $this->middleware(['role:admin|teacher|permission:audios.index|audios.create|audios.delete']);
     }
 
     public function index()
     {
-        $audios = Audio::where('user_id', Auth()->id())->latest()->when(request()->q, function($audios) {
-            $audios = $audios->where('title', 'like', '%'. request()->q . '%');
+        $audios = Audio::where('user_id', Auth()->id())->latest()->when(request()->q, function ($audios) {
+            $audios = $audios->where('title', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         return view('audios.index', compact('audios'));
@@ -38,13 +38,13 @@ class AudioController extends Controller
             'title'     => $request->input('title'),
             'link'     => $audio->hashName(),
             'caption'   => $request->input('caption'),
-            'user_id'   => Auth()->id(), 
+            'user_id'   => Auth()->id(),
         ]);
 
-        if($audio){
+        if ($audio) {
             //redirect dengan pesan sukses
             return redirect()->route('audios.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('audios.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -53,14 +53,14 @@ class AudioController extends Controller
     public function destroy($id)
     {
         $audio = Audio::findOrFail($id);
-        $link= Storage::disk('local')->delete('public/audios/'.$audio->link);
+        $link = Storage::disk('local')->delete('public/audios/' . $audio->link);
         $audio->delete();
 
-        if($audio){
+        if ($audio) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

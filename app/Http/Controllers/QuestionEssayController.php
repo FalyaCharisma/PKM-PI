@@ -18,13 +18,13 @@ class QuestionEssayController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['permission:question_essays.index|question_essays.create|question_essays.edit|question_essays.delete|question_essays.show']);
+        $this->middleware(['role:teacher|permission:question_essays.index|question_essays.create|question_essays.edit|question_essays.delete|question_essays.show']);
     }
 
     public function index()
     {
-        $questionEssays = QuestionEssay::where('created_by', Auth()->id())->latest()->when(request()->q, function($questionEssays) {
-            $questionEssays = $questionEssays->where('detail', 'like', '%'. request()->q . '%');
+        $questionEssays = QuestionEssay::where('created_by', Auth()->id())->latest()->when(request()->q, function ($questionEssays) {
+            $questionEssays = $questionEssays->where('detail', 'like', '%' . request()->q . '%');
         })->paginate(10);
 
         $subject = new Subject();
@@ -44,14 +44,14 @@ class QuestionEssayController extends Controller
         $audios = Audio::latest()->get();
         $images = Image::latest()->get();
         $documents = Document::latest()->get();
-        return view('question_essays.create', compact('subjects','videos', 'audios', 'images', 'documents'));
+        return view('question_essays.create', compact('subjects', 'videos', 'audios', 'images', 'documents'));
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'subject_id'  => 'required',           
-            'detail'      => 'required',    
+            'subject_id'  => 'required',
+            'detail'      => 'required',
         ]);
 
         $questionEssay = QuestionEssay::create([
@@ -62,13 +62,13 @@ class QuestionEssayController extends Controller
             'image_id'      => $request->input('image_id'),
             'document_id'   => $request->input('document_id'),
             'answer'        => $request->input('answer'),
-            'explanation'   => $request->input('explanation'),     
+            'explanation'   => $request->input('explanation'),
             'created_by'    => Auth()->id()
         ]);
-        if($questionEssay){
+        if ($questionEssay) {
             //redirect dengan pesan sukses
             return redirect()->route('question_essays.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('question_essays.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -86,15 +86,14 @@ class QuestionEssayController extends Controller
         $audios = Audio::latest()->get();
         $images = Image::latest()->get();
         $documents = Document::latest()->get();
-        return view('question_essays.edit', compact('subjects','questionEssay','videos','audios','images','documents'));
-    
+        return view('question_essays.edit', compact('subjects', 'questionEssay', 'videos', 'audios', 'images', 'documents'));
     }
 
     public function update(Request $request, QuestionEssay $questionEssay)
     {
         $this->validate($request, [
-            'subject_id'  => 'required',           
-            'detail'      => 'required',            
+            'subject_id'  => 'required',
+            'detail'      => 'required',
         ]);
 
         $questionEssay = QuestionEssay::findOrFail($questionEssay->id);
@@ -107,14 +106,14 @@ class QuestionEssayController extends Controller
             'image_id'      => $request->input('image_id'),
             'document_id'   => $request->input('document_id'),
             'answer'        => $request->input('answer'),
-            'explanation'   => $request->input('explanation'),  
+            'explanation'   => $request->input('explanation'),
             'created_by'    => Auth()->id()
         ]);
 
-        if($questionEssay){
+        if ($questionEssay) {
             //redirect dengan pesan sukses
             return redirect()->route('question_essays.index')->with(['success' => 'Data Berhasil Diupdate!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('question_essays.index')->with(['error' => 'Data Gagal Diupdate!']);
         }
@@ -126,11 +125,11 @@ class QuestionEssayController extends Controller
         $questionEssays->delete();
 
 
-        if($questionEssays){
+        if ($questionEssays) {
             return response()->json([
-                'status' => 'success' 
+                'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

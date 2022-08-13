@@ -3,6 +3,7 @@
 @section('content')
 <div class="main-content">
     <section class="section">
+        @hasanyrole('teacher')
         <div class="section-header">
             <h1>Edit Ujian</h1>
         </div>
@@ -83,6 +84,7 @@
                 </div>
             </div>
         </div>
+        @endhasanyrole
     </section>
 </div>
 
