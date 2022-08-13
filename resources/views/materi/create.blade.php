@@ -15,7 +15,8 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('materi.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('materi.store') }}" method="POST" enctype="multipart/form-data" name="formdata">
+                        {{-- <form class="btn-?submit" method="POST" enctype="multipart/form-data"> --}}
                         @csrf
 
                         <div class="form-group">
@@ -74,7 +75,7 @@
 
                         <div class="form-group">
                             <label>DOCUMENT</label>
-                            <input type="file" name="document" class="form-control @error('document') is-invalid @enderror">
+                            <input type="file" name="document" id="document" class="form-control @error('document') is-invalid @enderror">
 
                             @error('document')
                             <div class="invalid-feedback" style="display: block">
@@ -83,7 +84,7 @@
                             @enderror
                         </div>
 
-                        <button class="btn btn-primary mr-1 btn-submit" type="submit"><i class="fa fa-paper-plane"></i>
+                        <button class="btn btn-primary mr-1 btn-submit" type="submit" id="submit" name="submit"><i class="fa fa-paper-plane" onClick="jsAjax()"></i>
                             SIMPAN</button>
                         <button class="btn btn-warning btn-reset" type="reset"><i class="fa fa-redo"></i> RESET</button>
 
@@ -95,5 +96,9 @@
         </div>
     </section>
 </div>
+
+{{-- JS UNTUK UPLOAD FILE --}}
+
+X
 
 @stop

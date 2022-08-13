@@ -50,7 +50,7 @@ Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware' => 'auth'], function(){
+Route::group(['middleware' => 'auth'], function () {
 
     //dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
@@ -70,6 +70,8 @@ Route::group(['middleware' => 'auth'], function(){
         'show'
     ]);
 
+    // SUPER ADMIN DAN ADMIN
+
     Route::get('users/createSiswa', [UserController::class, 'createSiswa'])->name('users.createSiswa');
     Route::get('users/createTentor', [UserController::class, 'createTentor'])->name('users.createTentor');
     Route::get('users/createAdmin', [UserController::class, 'createAdmin'])->name('users.createAdmin');
@@ -85,11 +87,16 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('/users/siswa/updateSiswa/{id}', [UserController::class, 'updateSiswa'])->name('updateSiswa');
     Route::get('/users/admin/edittAdmin/{id}', [UserController::class, 'edittAdmin'])->name('edittAdmin');
     Route::post('/users/admin/updateAdmin/{id}', [UserController::class, 'updateAdmin'])->name('updateAdmin');
-    
+
+    // END SUPER ADMIN
+
+    // ADMIN DAN TENTOR
+
     //images
     Route::resource('images', ImageController::class)->except([
         'show', 'create', 'edit', 'update'
     ]);
+
 
     //videos
     Route::resource('videos', VideoController::class)->except([
@@ -106,21 +113,29 @@ Route::group(['middleware' => 'auth'], function(){
         'show', 'create', 'edit', 'update'
     ]);
 
-     //subjects
+    // End Admin dan tentor
+
+
+    // TENTOR
+    //subjects
     Route::resource('subjects', SubjectController::class)->except([
         'show', 'create', 'edit', 'update'
     ]);
+    // END TENTOR
 
+    // ADMIN
     //kelas
     Route::resource('kelas', KelasController::class)->except([
         'show', 'create', 'edit', 'update'
     ]);
 
-     //mapel
-     Route::resource('mapels', MapelController::class)->except([
+    //mapel
+    Route::resource('mapels', MapelController::class)->except([
         'show', 'create', 'edit', 'update'
     ]);
+    // END ADMIN
 
+    // Tentor
     //questions
     Route::resource('questions', QuestionController::class)->except([
         'show'
@@ -128,7 +143,10 @@ Route::group(['middleware' => 'auth'], function(){
 
     //question essays
     Route::resource('question_essays', QuestionEssayController::class);
+    // END TENTOR
 
+
+    //TENTOR DAN SISWA
     //ujian nilai
     // Route::resource('nilai', NilaiController::class);
     Route::get('/nilai', [NilaiController::class, 'index'])->name('nilai.index');
@@ -136,12 +154,17 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/nilai/exportPDF/', [NilaiController::class, 'export_pdf'])->name('nilai.exportPDF');
     Route::get('/nilai/cetakNilai/{id}', [NilaiController::class, 'cetakNilai'])->name('nilai.cetakNilai');
     Route::get('/nilai/siswa/{id}', [NilaiController::class, 'siswa'])->name('nilai.siswa');
+    //END TENTOR DAN SISWA
 
+
+    //SUPER ADMIN DAN ADMIN UNTUK CRUD
     //materi
     Route::resource('materi', MateriController::class);
     Route::get('materi/showMateri/{id}', [MateriController::class, 'showMateri'])->name('materi.showMateri');
     Route::get('materi/listMateri/{id}', [MateriController::class, 'listMateri'])->name('materi.listMateri');
+    //END SUPER ADMIN DAN ADMIN UNTUK CRUD
 
+    //TENTOR DAN ADMIN
     //absens
     Route::resource('absensi', AbsensiController::class)->except([
         'show', 'create', 'edit', 'update'
@@ -149,12 +172,14 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::get('/absensi/export_excel/{start_date}/{end_date}/{name}', [ExportController::class, 'export_excel'])->name('absensi.export_excel');
     Route::get('/absensi/exportPDF/{start_date}/{end_date}/{name}', [AbsensiController::class, 'cetakAbsensiPertanggalPDF'])->name('absensi.exportPDF');
+    // END TENTOR DAN ADMIN
 
-
+    //SUPER ADMIN DAN ADMIN UNTUK CRUD
     //informasi
-     Route::resource('informasi', InformasiController::class)->except([
+    Route::resource('informasi', InformasiController::class)->except([
         'show'
     ]);
+    //END SUPER ADMIN DAN ADMIN UNTUK CRUD
 
     //Profile
     Route::resource('profile', ProfileController::class)->except([
@@ -175,14 +200,16 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/diskusi/respon/editRespon/{id}', [DiskusiController::class, 'editRespon'])->name('editRespon');
     Route::post('/diskusi/respon/responUpdate/{id}', [DiskusiController::class, 'responUpdate'])->name('responUpdate');
 
+    // SISWA DAN TENTOR
     //exams 
-    Route::resource('exams', ExamController::class); 
+    Route::resource('exams', ExamController::class);
     Route::get('/exams/result/{score}/{user_id}/{exam_id}', [ExamController::class, 'result'])->name('exams.result');
     Route::get('/exams/start/{id}', [ExamController::class, 'start'])->name('exams.start');
     Route::get('exams/student/{id}', [ExamController::class, 'student'])->name('exams.student');
     Route::put('exams/assign/{id}', [ExamController::class, 'assign'])->name('exams.assign');
     Route::get('/exams/review/{user_id}/{exam_id}', [ExamController::class, 'review'])->name('exams.review');
     Route::get('exams/riwayat/{id}', [ExamController::class, 'riwayat'])->name('exams.riwayat');
+
 
     //exams essay
     Route::resource('exam_essays', ExamEssayController::class);
@@ -192,9 +219,11 @@ Route::group(['middleware' => 'auth'], function(){
     Route::put('exam_essays/assign/{id}', [ExamEssayController::class, 'assign'])->name('exam_essays.assign');
     Route::get('/exam_essays/review/{user_id}/{exam_id}', [ExamEssayController::class, 'review'])->name('exam_essays.review');
     Route::get('exam_essays/riwayat/{id}', [ExamEssayController::class, 'riwayat'])->name('exam_essays.riwayat');
+    //END SISWA DAN TENTOR
 
+    //SISWA ADMIN DAN SUPER ADMIN
     //penilaian
-    Route::resource('penilaian', PenilaianController::class); 
+    Route::resource('penilaian', PenilaianController::class);
     Route::get('penilaian/student/{id}', [PenilaianController::class, 'student'])->name('penilaian.student');
     Route::get('/penilaian/start/{id}', [PenilaianController::class, 'start'])->name('penilaian.start');
     Route::post('/penilaian/evaluasi/{id}', [PenilaianController::class, 'evaluasi'])->name('penilaian.evaluasi');
@@ -203,5 +232,6 @@ Route::group(['middleware' => 'auth'], function(){
 
     //jadwal
     Route::resource('jadwal', JadwalController::class);
+    //END SISWA DAN SUPER ADMIN
 
 });

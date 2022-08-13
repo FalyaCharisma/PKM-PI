@@ -6,7 +6,7 @@
         <div class="section-header">
             <h1>Materi</h1>
         </div>
-        @can('materi.showMateri')
+        {{-- @can('materi.showMateri') --}}
         <div class="section-body">
 
             <div class="card">
@@ -40,7 +40,11 @@
                                             <h5>Download Materi</h5>
                                         </div>
                                         <div class="card-body">
-                                            <a href="{{ asset('storage/public/materis/'.$materis->link) }}" class="btn btn-block btn-outline-primary">Download</a>
+                                            < @if($materis->link == '')
+                                            <a href="#"> <i class="fa-solid fa-empty-set"></i>Tidak ada File </a>
+                                        @else
+                                            <a href="{{ asset('storage/public/materis/'.$materi->link) }}" download> <i class="fas fa-file-download"></i> Download </a>
+                                        @endif
                                         </div>
                                     </div>
                             </div>
@@ -48,7 +52,7 @@
                     </section>  
                 </div>
             </div>
-        @endcan
+        {{-- @endcan --}}
     </section>
 </div>
 

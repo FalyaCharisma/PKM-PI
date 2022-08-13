@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Models\mataPelajaran;
 use App\Models\Kelas;
@@ -21,8 +22,8 @@ class MateriController extends Controller
 
     public function index()
     {
-        $materis = Materi::latest()->when(request()->q, function($materis) {
-            $materis = $materis->where('judul', 'like', '%'. request()->q . '%');
+        $materis = Materi::latest()->when(request()->q, function ($materis) {
+            $materis = $materis->where('judul', 'like', '%' . request()->q . '%');
         })->paginate(10);
         $mataPelajaran = mataPelajaran::latest()->get();
         $kelass = new Kelas();
@@ -35,23 +36,34 @@ class MateriController extends Controller
         $mataPelajaran = mataPelajaran::latest()->get();
         $kelass = Kelas::latest()->get();
         $user = Auth::user();
-        
+
         return view('materi.create', compact('mataPelajaran', 'kelass', 'user'));
     }
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'kelas'  => 'required',
-            'mapel'  => 'required',
-            'judul'  => 'required',
-            'isi'    => 'required',
-            'document'     => 'required|mimes:doc,docx,pdf,pptx,xlsx',
-        ]);
 
-        //upload document
-        $document = $request->file('document');
-        $document->storeAs('public/materis', $document->getClientOriginalName());
+        $name = '';
+        if ($request->hasFile('document')) {
+            $name = $request->document->getClientOriginalName();
+            $this->validate($request, [
+                'kelas'  => 'required',
+                'mapel'  => 'required',
+                'judul'  => 'required',
+                'isi'    => 'required',
+                'document'     => 'mimes:doc,docx,pdf,pptx,xlsx',
+            ]);
+            //upload document
+            $document = $request->file('document');
+            $document->storeAs('public/materis', $name);
+        } else {
+            $this->validate($request, [
+                'kelas'  => 'required',
+                'mapel'  => 'required',
+                'judul'  => 'required',
+                'isi'    => 'required',
+            ]);
+        }
 
         $materi = Materi::create([
             'kelas'           => $request->input('kelas'),
@@ -59,7 +71,7 @@ class MateriController extends Controller
             'judul'           => $request->input('judul'),
             'isi'             => $request->input('isi'),
             'user_id'         => Auth()->id(),
-            'link'            => $document->getClientOriginalName(),
+            'link'            => $name,
         ]);
 
 
@@ -77,7 +89,7 @@ class MateriController extends Controller
         $mataPelajaran = mataPelajaran::latest()->get();
         $kelass = Kelas::latest()->get();
         $user = User::latest()->get();
-        
+
         return view('materi.edit', compact('materi', 'mataPelajaran', 'kelass', 'user'));
     }
 
@@ -88,7 +100,7 @@ class MateriController extends Controller
             'mapel'  => 'required',
             'judul'  => 'required',
             'isi'    => 'required',
-            'document'     => 'required|mimes:doc,docx,pdf,pptx,xlsx',
+            'document'     => 'mimes:doc,docx,pdf,pptx,xlsx',
         ]);
 
         $document = $request->file('document');
@@ -103,10 +115,10 @@ class MateriController extends Controller
             'link'            => $document->getClientOriginalName(),
         ]);
 
-        if($materi){
+        if ($materi) {
             //redirect dengan pesan sukses
             return redirect()->route('materi.index')->with(['success' => 'Data Berhasil Diupdate!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('materi.index')->with(['error' => 'Data Gagal Diupdate!']);
         }
@@ -118,17 +130,17 @@ class MateriController extends Controller
         $materi->delete();
 
 
-        if($materi){
+        if ($materi) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);
         }
     }
-    
+
 
     public function showMateri($id)
     {

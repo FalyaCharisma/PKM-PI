@@ -59,7 +59,7 @@
                                 {{ $materi->judul }}
                                 </div>
                                 {{ $materi->created_at }}<br>
-                                <a href="materi/showMateri/{{ $materi->id }}">Selengkapnya</a>
+                                <a href="/materi/showMateri/{{ $materi->id }}">Selengkapnya</a>
                             </div>
                         </div>
                     </div>
