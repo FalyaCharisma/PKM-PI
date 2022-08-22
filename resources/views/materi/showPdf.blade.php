@@ -13,7 +13,7 @@
                     <h4><i class="fas fa-book"></i> {{$materis->mapel}}</h4>
                 </div>
                 <?php use Illuminate\Support\Facades\Storage; ?>
-                <iframe src="{{ Storage::url('public/materis/'.$materis->link) }}" frameborder="0" style="width: 100%; height: 100%;"></frame>
+                <embed src="{{ asset('storage/public/materis/'.$materis->link) }}" frameborder="0" style="width: 100%; height: 100%;"></frame>
 
                 </div>
             </div>

@@ -165,10 +165,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('materi/listMateri/{nama_kelas}/{mapel}', [MateriController::class, 'listMateri'])->name('materi.listMateri');
     Route::get('materi/listKelas/{nama_kelas}', [MateriController::class, 'getMapel_byKelas'])->name('materi.listKelas');
 
-    // Route::get('/materi/listMateri/kelas/{kelas}/mapel/{mapel}', function (Materi $kelas, Materi $mapel) {
-    //     //
-    // })->name('materi.listMateri');
-
     Route::get('materi/show/pdf/{id}', [MateriController::class, 'showPdf'])->name('showPdf');
     // Route::get('storage/public/materis/{file}', [MateriController::class, 'downloadPdf'])->name('downloadPdf');
     //END SUPER ADMIN DAN ADMIN UNTUK CRUD

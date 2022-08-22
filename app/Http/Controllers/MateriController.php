@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class MateriController extends Controller
@@ -62,7 +63,7 @@ class MateriController extends Controller
                 'mapel'  => 'required',
                 'judul'  => 'required',
                 'isi'    => 'required',
-                'document'     => 'mimes:doc,docx,pdf,pptx,xlsx',
+                'document'     => 'mimes:doc,docx,pdf,pptx,xlsx|max:30000',
             ]);
             //upload document
             $document = $request->file('document');
@@ -113,7 +114,7 @@ class MateriController extends Controller
                 'mapel'  => 'required',
                 'judul'  => 'required',
                 'isi'    => 'required',
-                'document'     => 'mimes:doc,docx,pdf,pptx,xlsx',
+                'document'     => 'mimes:doc,docx,pdf,pptx,xlsx|max:30000',
             ]);
 
             $name = $request->file('document')->getClientOriginalName();
@@ -185,6 +186,11 @@ class MateriController extends Controller
     {
         $materis = Materi::findOrFail($id);
         return view('materi.showPdf', compact('materis'));
+        // $path = storage_path('materis/' . $materis->link);
+        // return Response::make(file_get_contents($path), 200, [
+        //     'content-type' => 'application/pdf',
+        //     'Content-Disposition' => 'inline; filename="' . $materis->link . '"'
+        // ]);
     }
     public function downloadPdf($path)
     {
@@ -194,7 +200,11 @@ class MateriController extends Controller
 
     public function getMapel_byKelas($id)
     {
-        $materis = Materi::where('kelas', $id)->paginate(5);
+        $materis = DB::table('materi')
+            ->where('kelas', $id)
+            ->groupBy('mapel')
+            ->paginate(5);
+
 
         return view('materi.listKelas', compact('materis'));
     }
