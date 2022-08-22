@@ -102,7 +102,22 @@
                             </div>
                             @enderror
                         </div>
-                       
+                        <div class="form-group">
+                            <label>CABANG</label>
+                            @hasrole('admin')
+                            <input type="text" name="cabang" value="{{ Auth::user()->admin->cabang }}" placeholder="Masukkan Cabang"
+                                class="form-control @error('cabang') is-invalid @enderror" required>
+                            @endhasrole
+                            @hasrole('superadmin')
+                            <input type="text" name="cabang" value="{{ old('cabang') }}" placeholder="Masukkan Cabang"
+                                class="form-control @error('cabang') is-invalid @enderror" required>
+                            @endhasrole
+                            @error('cabang')
+                            <div class="invalid-feedback" style="display: block">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
 
                         <button class="btn btn-primary mr-1 btn-submit" type="submit"><i class="fa fa-paper-plane"></i>
                             SIMPAN</button>

@@ -171,7 +171,7 @@ class UserController extends Controller
         $tentor->name = $data['name'];
         $tentor->no_wa = $data['no_wa'];
         $tentor->alamat = $data['alamat'];
-        $tentor->cabang = Auth::user()->admin->cabang;
+        $tentor->cabang = $data['cabang'];
         $tentor->save();
 
         return redirect()->route('users.tentor')->with(['success' => 'Data Berhasil Disimpan!']);

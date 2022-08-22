@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User; 
 use App\Models\Siswa; 
 use App\Models\Tentor; 
+use App\Models\Admin; 
 class ProfileController extends Controller
 {
     public function __construct(){
@@ -54,6 +55,16 @@ class ProfileController extends Controller
     }
     public function tentorUpdate(Request $request, $id){ 
         $tentor = Tentor::find($id)->update($request->all());
+        return redirect()->route('dashboard.index')->with(['success' => 'Data Berhasil Diupdate!']);
+    }
+
+    public function editAdmin(Request $request){ 
+        $user = User::where('id',Auth::user()->id)->first();
+        $admin = Admin::where('user_id', $id)->get();
+        return view('profile.editAdmin', compact('user','admin'));
+    }
+    public function adminUpdate(Request $request, $id){ 
+        $admin = Admin::find($id)->update($request->all());
         return redirect()->route('dashboard.index')->with(['success' => 'Data Berhasil Diupdate!']);
     }
 
