@@ -10,24 +10,35 @@ use App\Models\Siswa;
 use App\Models\Tentor;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class MateriController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware(['permission:materi.index|materi.create|materi.edit|materi.delete|materi.tentor|materi.showMateri|materi.showlist']);
+        $this->middleware(['permission:materi.index|materi.create|materi.edit|materi.delete|materi.tentor|materi.showMateri|materi.showlist|pdf']);
     }
 
     public function index()
     {
         $materis = Materi::latest()->when(request()->q, function ($materis) {
             $materis = $materis->where('judul', 'like', '%' . request()->q . '%');
-        })->paginate(10);
-        $mataPelajaran = mataPelajaran::latest()->get();
-        $kelass = new Kelas();
+        })->paginate(5);
+
+        $mataPelajaran = mataPelajaran::latest()->when(request()->q, function ($mataPelajaran) {
+            $mataPelajaran = $mataPelajaran->where('mata_pelajaran', 'like', '%' . request()->q . '%');
+        })->paginate(5);
+
+        $kelass = Kelas::latest()->when(request()->q, function ($kelass) {
+            $kelass = $kelass->where('nama_kelas', 'like', '%' . request()->q . '%');
+        })->paginate(5);
+
         $user = new User();
+        // $kelass = new Kelas();
+        // $user = new User();
         return view('materi.index', compact('materis', 'mataPelajaran', 'kelass', 'user'));
     }
 
@@ -163,12 +174,28 @@ class MateriController extends Controller
         return view('materi.showMateri', compact('user', 'materis'));
     }
 
-    public function listMateri($id)
+    public function listMateri($kelas, $mapel)
     {
-        $mataPelajaran = mataPelajaran::findOrFail($id);
-        // $materis = Materi::get();
-        $materis = Materi::where('mapel', $mataPelajaran->mata_pelajaran)->get();
+        $materis = Materi::where('kelas', $kelas)->where('mapel', $mapel)->get();
 
-        return view('materi.listMateri', compact('mataPelajaran', 'materis'));
+        return view('materi.listMateri', compact('materis'));
+    }
+
+    public function showPdf($id)
+    {
+        $materis = Materi::findOrFail($id);
+        return view('materi.showPdf', compact('materis'));
+    }
+    public function downloadPdf($path)
+    {
+        // return response()->download('/storage/public/materis/', $path, [], 'inline');
+        return Storage::download($path);
+    }
+
+    public function getMapel_byKelas($id)
+    {
+        $materis = Materi::where('kelas', $id)->paginate(5);
+
+        return view('materi.listKelas', compact('materis'));
     }
 }

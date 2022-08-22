@@ -43,7 +43,9 @@
                                              @if($materis->link == '')
                                             <a href="#"> <i class="fa-solid fa-empty-set"></i>Tidak ada File </a>
                                         @else
-                                            <a href="{{ url('storage/public/materis/'.$materis->link) }}" download> <i class="fas fa-file-download"></i> Download </a>
+                                            <a href="{{ asset('storage/public/materis/'.$materis->link) }}" download> <i class="fas fa-file-download"></i> Download </a>
+                                            {{-- <a href="{{ route('downloadPdf',$materis->link) }}"> <i class="fas fa-file-download"></i> Download </a> --}}
+                                            {{-- <a href="{{ route('showPdf',$materis->id)}}" target="_blank"> <i class="fas fa-file-download"></i> Preview </a> --}}
                                         @endif
                                         </div>
                                     </div>

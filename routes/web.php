@@ -28,6 +28,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\JadwalController;
 use App\Models\Exam;
+use App\Models\Materi;
 use App\Models\Penilaian;
 
 
@@ -161,7 +162,15 @@ Route::group(['middleware' => 'auth'], function () {
     //materi
     Route::resource('materi', MateriController::class);
     Route::get('materi/showMateri/{id}', [MateriController::class, 'showMateri'])->name('materi.showMateri');
-    Route::get('materi/listMateri/{id}', [MateriController::class, 'listMateri'])->name('materi.listMateri');
+    Route::get('materi/listMateri/{nama_kelas}/{mapel}', [MateriController::class, 'listMateri'])->name('materi.listMateri');
+    Route::get('materi/listKelas/{nama_kelas}', [MateriController::class, 'getMapel_byKelas'])->name('materi.listKelas');
+
+    // Route::get('/materi/listMateri/kelas/{kelas}/mapel/{mapel}', function (Materi $kelas, Materi $mapel) {
+    //     //
+    // })->name('materi.listMateri');
+
+    Route::get('materi/show/pdf/{id}', [MateriController::class, 'showPdf'])->name('showPdf');
+    // Route::get('storage/public/materis/{file}', [MateriController::class, 'downloadPdf'])->name('downloadPdf');
     //END SUPER ADMIN DAN ADMIN UNTUK CRUD
 
     //TENTOR DAN ADMIN
