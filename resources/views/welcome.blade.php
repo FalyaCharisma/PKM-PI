@@ -203,5 +203,8 @@
     
     <!-- Global Init -->
     <script src="asset/js/custom.js"></script>
+
+    {{-- display pdf --}}
+    <script src="asset/js/pspdfkit.js"></script>
     </body>
 </html>

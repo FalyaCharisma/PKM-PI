@@ -39,22 +39,24 @@
                             <thead>
                             <tr>
                                 <th scope="col" style="text-align: center;width: 6%">NO.</th>
-                                <th scope="col">MATA PELAJARAN</th>
+                                <th scope="col">KELAS</th>
                             </tr>
                             </thead>
                             <tbody>
                             @php 
                                 $no=1;
                             @endphp
-                            @foreach($mataPelajaran as $mataPelajaran)   
+                            @foreach($kelass as $kelas)   
                                 <tr>
                                     <th scope="row" style="text-align: center"> {{ $no++ }} </th>
-                                    <td><a href="materi/listMateri/{{ $mataPelajaran->id }}">{{ $mataPelajaran->mata_pelajaran}}</a></td>
+                                    <td><a href="materi/listKelas/{{ $kelas->nama_kelas }}">{{ $kelas->nama_kelas}}</a></td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
-                     
+                        <div style="text-align: center">
+                            {{$kelass->links("vendor.pagination.bootstrap-4")}}
+                        </div>
                     </div>
                 </div>
             </div>
