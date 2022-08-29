@@ -21,17 +21,19 @@ class JadwalController extends Controller
         $tentor = new Tentor();
         // $jadwals = Jadwal::all()->paginate(5);
         $currentUser = User::findOrFail(Auth()->id());
-        $nama = substr( $currentUser->getName(Auth()->id()),0,4);
+        $nama = substr($currentUser->getName(Auth()->id()), 0, 4);
+        $nama_tentor = '';
+
         if ($currentUser->hasRole('teacher')) {
-            $jadwals = Jadwal::latest()->where('nama_tentor','like','%'.$nama.'%')->paginate(5);
-        }else if ($currentUser->hasRole('student')) {
-            $jadwals = Jadwal::latest()->where('nama_tentor','like','%'.$nama_tentor.'%')->paginate(5);
-        }else{
+            $jadwals = Jadwal::latest()->where('nama_tentor', 'like', '%' . $nama . '%')->paginate(5);
+        } else if ($currentUser->hasRole('student')) {
+            $jadwals = Jadwal::latest()->where('nama_tentor', 'like', '%' . $nama_tentor . '%')->paginate(5);
+        } else {
             $jadwals = Jadwal::latest()->paginate(5);
         }
-    
+
         // var_dump($jadwals);
-        return view('jadwal.index',compact('jadwals','siswa','tentor'));
+        return view('jadwal.index', compact('jadwals', 'siswa', 'tentor'));
     }
 
     /**
@@ -43,7 +45,7 @@ class JadwalController extends Controller
     {
         $tentor = Tentor::latest()->get();
         $siswa = Siswa::latest()->get();
-        return view('jadwal.create', compact('tentor','siswa'));
+        return view('jadwal.create', compact('tentor', 'siswa'));
     }
 
     /**
@@ -69,8 +71,8 @@ class JadwalController extends Controller
         // $jadwal->save();
 
         $jadwal = Jadwal::create([
-            
-            'nama_siswa'          => $request->input('nama_siswa'),          
+
+            'nama_siswa'          => $request->input('nama_siswa'),
             'senin'         => $request->input('senin'),
             'selasa'           => $request->input('selasa'),
             'rabu'         => $request->input('rabu'),
@@ -78,19 +80,19 @@ class JadwalController extends Controller
             'jumat'         => $request->input('jumat'),
             'sabtu'           => $request->input('sabtu'),
             'minggu'         => $request->input('minggu'),
-              // 'hari'=> $request->input('hari'),
+            // 'hari'=> $request->input('hari'),
             // 'jam_masuk'         => $request->input('jam_masuk'),
             // 'jam_pulang'           => $request->input('jam_pulang'),
         ]);
 
-       
+
         // $exam->questions()->sync($request->input('questions'));
 
-        if($jadwal){
+        if ($jadwal) {
             // dd($jadwal);
             //redirect dengan pesan sukses
             return redirect()->route('jadwal.index')->with(['success' => 'Data Berhasil Disimpan!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('jadwal.index')->with(['error' => 'Data Gagal Disimpan!']);
         }
@@ -120,7 +122,7 @@ class JadwalController extends Controller
         // $tentor = Tentor::findOrFail($id);
         // $siswa = Siswa::latest()->get();
         // return view('jadwal.edit', compact('tentor','siswa'));
-        return view('jadwal.edit', compact('jadwals','allJadwal'));
+        return view('jadwal.edit', compact('jadwals', 'allJadwal'));
     }
 
     /**
@@ -141,8 +143,8 @@ class JadwalController extends Controller
         // ]);
 
         $jadwal->update([
-    
-            'nama_siswa'          => $request->input('nama_siswa'),          
+
+            'nama_siswa'          => $request->input('nama_siswa'),
             'senin'         => $request->input('senin'),
             'selasa'           => $request->input('selasa'),
             'rabu'         => $request->input('rabu'),
@@ -152,10 +154,10 @@ class JadwalController extends Controller
             'minggu'         => $request->input('minggu'),
         ]);
 
-        if($jadwal){
+        if ($jadwal) {
             //redirect dengan pesan sukses
             return redirect()->route('jadwal.index')->with(['success' => 'Data Berhasil Diupdate!']);
-        }else{
+        } else {
             //redirect dengan pesan error
             return redirect()->route('jadwal.index')->with(['error' => 'Data Gagal Diupdate!']);
         }
@@ -172,11 +174,11 @@ class JadwalController extends Controller
         $jadwal = Jadwal::findOrFail($id);
         $jadwal->delete();
 
-        if($jadwal){
+        if ($jadwal) {
             return response()->json([
                 'status' => 'success'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error'
             ]);

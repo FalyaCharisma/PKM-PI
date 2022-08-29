@@ -64,11 +64,11 @@
                                 <tr>
                                     <th>{{ $count++ }}</th>
                                     @if($jadwal->nama_siswa!==null)
-                                    @foreach($siswa as $siswa)
-                                    @if($jadwal->nama_siswa == $siswa->name)
-                                    <td>{{ $siswa->nama_tentor  }}</td>
-                                    @endif
-                                    @endforeach
+                                        @foreach($siswa as $siswa)
+                                            @if($jadwal->nama_siswa == $siswa->name)
+                                                <td>{{ $siswa->nama_tentor  }}</td>
+                                            @endif
+                                        @endforeach
                                     @endif
                                     <td>{{ $jadwal->nama_siswa }}</td>
                                     <td>{{ $jadwal->senin[0] }} - {{ $jadwal->senin[1] }}</td>
@@ -78,7 +78,7 @@
                                     <td>{{ $jadwal->jumat[0] }} - {{ $jadwal->jumat[1] }}</td>
                                     <td>{{ $jadwal->sabtu[0] }} - {{ $jadwal->sabtu[1] }}</td>
                                     <td>{{ $jadwal->minggu[0] }} - {{ $jadwal->minggu[1] }}</td>
-                                   
+                                    
                                     <td class="text-center">
                                     @can('jadwal.edit')
                                             <a href="{{route('jadwal.edit', $jadwal->id)}}" class="btn btn-sm btn-primary">

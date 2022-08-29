@@ -30,11 +30,10 @@
         @endhasanyrole
         @hasanyrole('superadmin|admin')
         {{-- @hasrole('superadmin')
-          <div class="row">
-              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-primary">
-                  <i class="fa fa-users text-white fa-2x"></i>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+          <div class="card card-statistic-1">
+            <div class="card-icon bg-primary">
+              <i class="fa fa-users text-white fa-2x"></i>
                 </div>
                 <div class="card-wrap">
                   <div class="card-header">
@@ -46,38 +45,39 @@
                 </div>
               </div>
             </div>  
-        @endhasrole --}}
-          <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-warning">
-                  <i class="fa fa-users text-white fa-2x"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>SISWA</h4>
-                  </div>
-                  <div class="card-body">
-                    {{ App\Models\User::role('student')->count() ?? '0' }}
-                  </div>
-                </div>
-              </div>
-            </div>   
+            @endhasrole --}}
+          <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-success">
-                  <i class="fa fa-users text-white fa-2x"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>TENTOR</h4>
+                <div class="card card-statistic-1">
+                  <div class="card-icon bg-warning">
+                    <i class="fa fa-users text-white fa-2x"></i>
                   </div>
-                  <div class="card-body">
-                    {{ App\Models\User::role('teacher')->count() ?? '0' }}
+                  <div class="card-wrap">
+                    <div class="card-header">
+                      <h4>SISWA</h4>
+                    </div>
+                    <div class="card-body">
+                      {{ App\Models\User::role('student')->count() ?? '0' }}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>   
-          <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+              </div>   
+              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                  <div class="card-icon bg-success">
+                    <i class="fa fa-users text-white fa-2x"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="card-header">
+                      <h4>TENTOR</h4>
+                    </div>
+                    <div class="card-body">
+                      {{ App\Models\User::role('teacher')->count() ?? '0' }}
+                    </div>
+                  </div>
+                </div>
+              </div>   
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
                   <i class="fa fa-book text-white fa-2x"></i>
