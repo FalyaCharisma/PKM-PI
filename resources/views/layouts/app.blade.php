@@ -55,6 +55,11 @@
                                 <i class="fas fa-pencil-alt"></i> Edit Profil
                         </a>
                         @endcan
+                        @hasrole('admin')
+                        <a href="{{ url('profile') }}" class="dropdown-item has-icon text-danger">
+                                <i class="fas fa-pencil-alt"></i> Edit Profil
+                        </a>
+                        @endhasrole
                             <a href="{{ route('logout') }}" style="cursor: pointer" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();"
                                 class="dropdown-item has-icon text-danger">
@@ -181,7 +186,7 @@
                                 <span>Materi</span></a>
                         </li>
                         @endcan
-                        @hasrole('admin')
+                        @hasanyrole('superadmin|admin')
                         <li
                             class="dropdown">       
                             <a href="#" class="nav-link has-dropdown"><i class="fas fa-folder"></i><span>Resource</span></a> 
@@ -198,7 +203,7 @@
                             @endcan
                             </ul>
                         </li>
-                        @endhasrole
+                        @endhasanyrole
                         @hasanyrole('teacher|student')
                         <li
                             class="dropdown {{ setActive('/exam'). setActive('exam_essay') }}">       

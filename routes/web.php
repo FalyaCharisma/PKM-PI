@@ -194,6 +194,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/profile/siswa/siswaUpdate/{id}', [ProfileController::class, 'siswaUpdate'])->name('siswaUpdate');
     Route::get('/profile/tentor/editTentor/{id}', [ProfileController::class, 'editTentor'])->name('editTentor');
     Route::post('/profile/tentor/tentorUpdate/{id}', [ProfileController::class, 'tentorUpdate'])->name('tentorUpdate');
+    Route::get('/profile/admin/editAdmin/{id}', [ProfileController::class, 'editAdmin'])->name('editAdmin');
+    Route::post('/profile/admin/adminUpdate/{id}', [ProfileController::class, 'adminUpdate'])->name('adminUpdate');
 
     //Diskusi
     Route::resource('diskusi', DiskusiController::class)->except([
